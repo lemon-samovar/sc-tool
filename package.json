@@ -1,0 +1,19 @@
+{
+  "name": "tc-tool",
+  "version": "0.1.0",
+  "description": "ISO 6346 shipping container utility",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": ["dist"],
+  "scripts": {
+    "build": "tsc"
+  },
+  "author": "lemon-samovar",
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^5.9.3"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  }
+}
