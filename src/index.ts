@@ -11,11 +11,7 @@ interface FullCont {
 interface ContNumAndType {
     kind: "numAndType",
     containerNumber: string,
-    typeCode: string
-}
-interface ContNum {
-    kind: "num",
-    containerNumber: string
+    typeCode?: string
 }
 
 export class Container {
@@ -25,16 +21,15 @@ export class Container {
     readonly checkDigit: number | string;
     readonly typeCode: string;
     
-    constructor(data: string 
-        | ContNum 
+    constructor(data: string
         | FullCont
         | ContNumAndType) {
-        if (typeof data !== "string" && (data.kind === "num" || data.kind === "numAndType")) {
+        if (typeof data !== "string" && (data.kind === "numAndType")) {
             this.ownerCode = data.containerNumber.slice(0, 4);
             this.categoryIdentifier = data.containerNumber[4];
             this.serialNumber = data.containerNumber.slice(5, 11);
             this.checkDigit = data.containerNumber[11] ?? this.calculateCheckDigit();
-            this.typeCode = data.kind === "numAndType" ? data.typeCode : '';
+            this.typeCode = data.typeCode ?? '';
         } else if (typeof data === "string") {
             this.ownerCode = data.slice(0, 4);
             this.categoryIdentifier = data[4];
