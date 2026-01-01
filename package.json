@@ -1,5 +1,5 @@
 {
-  "name": "tc-tool",
+  "name": "@lemon-samovar/tc-tool",
   "version": "0.1.0",
   "description": "ISO 6346 shipping container utility",
   "main": "dist/index.js",
@@ -15,5 +15,6 @@
   },
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"
-  }
+  },
+  "repository": "https://github.com/lemon-samovar/tc-tool.git"
 }
