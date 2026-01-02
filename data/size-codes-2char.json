@@ -1,0 +1,62 @@
+{
+    "0": {
+        "height": "2438 mm (8 ft)",
+        "width": "2438 mm (8 ft)"
+    },
+    "2": {
+        "height": "2591 mm (8,5 ft)",
+        "width": "2438 mm (8 ft)"
+    },
+    "4": {
+        "height": "2743 mm (9 ft)",
+        "width": "2438 mm (8 ft)"
+    },
+    "5": {
+        "height": "2895 mm (9,5 ft)",
+        "width": "2438 mm (8 ft)"
+    },
+    "6": {
+        "height": "> 2895 mm (9,5 ft)",
+        "width": "2438 mm (8 ft)"
+    },
+    "8": {
+        "height": "1295 mm (4,25 ft)",
+        "width": "2438 mm (8 ft)"
+    },
+    "9": {
+        "height": "≤ 1219 mm (4 ft)",
+        "width": "2438 mm (8 ft)"
+    },
+    "C": {
+        "height": "2591 mm (8,5 ft)",
+        "width": "> 2438 mm (8 ft) and ≤ 2500 mm (8,2 ft)"
+    },
+    "D": {
+        "height": "2743 mm (9 ft)",
+        "width": "> 2438 mm (8 ft) and ≤ 2500 mm (8,2 ft)"
+    },
+    "E": {
+        "height": "2895 mm (9,5 ft)",
+        "width": "> 2438 mm (8 ft) and ≤ 2500 mm (8,2 ft)"
+    },
+    "F": {
+        "height": "> 2895 mm (9,5 ft)",
+        "width": "> 2438 mm (8 ft) and ≤ 2500 mm (8,2 ft)"
+    },
+    "L": {
+        "height": "2591 mm (8,5 ft)",
+        "width": "> 2500 mm (8,2 ft)"
+    },
+    "M": {
+        "height": "2743 mm (9 ft)",
+        "width": "> 2500 mm (8,2 ft)"
+    },
+    "N": {
+        "height": "2895 mm (9,5 ft)",
+        "width": "> 2500 mm (8,2 ft)"
+    },
+    "P": {
+        "height": "> 2895 mm (9,5 ft)",
+        "width": "> 2500 mm (8,2 ft)"
+    }
+}
