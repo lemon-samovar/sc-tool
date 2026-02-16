@@ -1,6 +1,6 @@
 {
   "name": "@lemon-samovar/sc-tool",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "A utility to easily operate shipping container data",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
