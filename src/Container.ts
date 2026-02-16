@@ -14,27 +14,23 @@ const bicMap = new Map(_bicCodes.map(item => [item.code, item]));
 
 export class Container {
     readonly ownerCode: string;
-    readonly categoryIdentifier: string;
     readonly serialNumber: number | string;
     readonly checkDigit: number | string;
     readonly typeCode: string;
     
     constructor(data: ContainerData) {
         if (typeof data !== "string" && (data.format === "short")) {
-            this.ownerCode = data.containerNumber.slice(0, 4);
-            this.categoryIdentifier = data.containerNumber[4];
+            this.ownerCode = data.containerNumber.slice(0, 5);
             this.serialNumber = data.containerNumber.slice(5, 11);
             this.checkDigit = data.containerNumber[11] ?? this.calculateCheckDigit();
             this.typeCode = data.typeCode ?? '';
         } else if (typeof data === "string") {
-            this.ownerCode = data.slice(0, 4);
-            this.categoryIdentifier = data[4];
+            this.ownerCode = data.slice(0, 5);
             this.serialNumber = data.slice(5, 11);
             this.checkDigit = data[11] ?? this.calculateCheckDigit();
             this.typeCode = '';
         } else {
             this.ownerCode = data.ownerCode;
-            this.categoryIdentifier = data.categoryIdentifier;
             this.serialNumber = data.serialNumber;
             this.checkDigit = data.checkDigit ?? this.calculateCheckDigit();
             this.typeCode = data.typeCode ?? "";
@@ -42,10 +38,10 @@ export class Container {
     }    
 
     calculateCheckDigit(): number | string {
-        if (this.ownerCode && this.categoryIdentifier && this.serialNumber) {
-            const ownerCodeAndCategoryIdentifier = [...(this.ownerCode + this.categoryIdentifier)];
+        if (this.ownerCode && this.serialNumber) {
+            const ownerCode = [...this.ownerCode];
             let sum = 0;
-            ownerCodeAndCategoryIdentifier.forEach((letter, idx) => {
+            ownerCode.forEach((letter, idx) => {
                 sum += lettersTable[letter] * 2**idx;
             });
             String(this.serialNumber).split("").forEach((element, idx) => {
@@ -58,21 +54,21 @@ export class Container {
     }
 
     fullContainerNumber(): string {
-        const ownerCode = this.ownerCode ? this.ownerCode : 'XXX';
-        const categoryIdentifier = this.categoryIdentifier ? this.categoryIdentifier : 'X';
+        const ownerCode = this.ownerCode ? this.ownerCode : 'XXXX';
         const serialNumber = this.serialNumber ? this.serialNumber : 'XXXXXX';
         const checkDigit = this.checkDigit ? this.checkDigit : 'X';
-        return (ownerCode + categoryIdentifier + serialNumber + checkDigit).toUpperCase()
+        return (ownerCode + serialNumber + checkDigit).toUpperCase()
     }
     
     typeInfo(): ContainerTypeData | null {
-        if (this.typeCode && this.categoryIdentifier) {
+        if (this.typeCode) {
             const type: string = this.typeCode.slice(0, 2);
             const sizeFirstChar = this.typeCode[2];
             const sizeSecondChar = this.typeCode[3];
+            const categoryIdentifier = this.typeCode[4];
 
             return {
-                category: categoryIdentifiers[this.categoryIdentifier],
+                category: categoryIdentifiers[categoryIdentifier],
                 type: typeCodes[type],
                 width: sizeCodesFirstChar[sizeFirstChar],
                 length: sizeCodesSecondChar[sizeSecondChar]['width'],

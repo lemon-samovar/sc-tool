@@ -1,7 +1,6 @@
 export interface FullContainerData {
     format: "full",
     ownerCode: string,
-    categoryIdentifier: string, 
     serialNumber: number | string, 
     checkDigit?: number | string,
     typeCode?: string,
