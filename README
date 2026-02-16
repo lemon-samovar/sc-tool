@@ -1,0 +1,52 @@
+# sc-tool (shipping container tool)
+
+`sc-tool` is the utility to easily operate shipping container data.
+
+## Installation
+
+```bash
+npm install @lemon-samovar/sc-tool
+```
+
+## Usage
+
+```typescript
+import { Container, ContainerData } from '@lemon-samovar/sc-tool';
+
+const container1 = new Container('MSCU123456');
+console.log(container1.checkDigit) // output: `0`
+```
+### `Container`
+
+Creates a container instance from `ContainerData` type.
+
+```typescript
+new Container(data: string | FullContainerData | ShortContainerData);
+
+
+interface FullContainerData {
+    format: "full",
+    ownerCode: string,
+    categoryIdentifier: string, 
+    serialNumber: number | string, 
+    checkDigit?: number | string,
+    typeCode?: string,
+}
+
+interface ShortContainerData {
+    format: "short",
+    containerNumber: string,
+    typeCode?: string
+}
+```
+
+
+
+## Contributing
+
+Pull requests are welcome. For major changes, please open an issue first
+to discuss what you would like to change.
+
+## License
+
+[Apache License 2.0](https://choosealicense.com/licenses/apache-2.0/)
