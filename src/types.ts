@@ -25,3 +25,10 @@ export interface ContainerTypeData {
     length: string, 
     height: string
 }
+
+export interface ContainerOwnerData {
+    code: string,
+    company: string,
+    city: string,
+    country: string
+}

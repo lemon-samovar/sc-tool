@@ -1,14 +1,16 @@
 import { lettersTable } from "./constants";
-import type { ContainerData, ContainerTypeData } from "./types";
+import type { ContainerData, ContainerTypeData, ContainerOwnerData } from "./types";
 import _typeCodes from "../data/type-codes.json";
 import _sizeCodesFirstChar from "../data/size-codes-1char.json";
 import _sizeCodesSecondChar from "../data/size-codes-2char.json";
 import _categoryIdentifiers from "../data/category-identifier.json";
+import _bicCodes from "../data/bic-codes.json";
 
 const typeCodes = _typeCodes as {[index: string]: string}
 const sizeCodesFirstChar = _sizeCodesFirstChar as {[index: string]: string}
 const sizeCodesSecondChar = _sizeCodesSecondChar as {[index: string]: {height: string, width: string}}
 const categoryIdentifiers = _categoryIdentifiers as {[index: string]: string}
+const bicMap = new Map(_bicCodes.map(item => [item.code, item]));
 
 export class Container {
     readonly ownerCode: string;
@@ -63,7 +65,7 @@ export class Container {
         return (ownerCode + categoryIdentifier + serialNumber + checkDigit).toUpperCase()
     }
     
-    typeInfo(): ContainerTypeData | undefined {
+    typeInfo(): ContainerTypeData | null {
         if (this.typeCode && this.categoryIdentifier) {
             const type: string = this.typeCode.slice(0, 2);
             const sizeFirstChar = this.typeCode[2];
@@ -77,7 +79,14 @@ export class Container {
                 height: sizeCodesSecondChar[sizeSecondChar]['height']
             }
         } else {
-            return undefined
+            return null
         }
+    }
+
+    ownerInfo(): ContainerOwnerData | null {
+        if (!this.ownerCode) return null;
+        const entry = bicMap.get(this.ownerCode);
+        if (!entry) return null;
+        else return entry
     }
 }
