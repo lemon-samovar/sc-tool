@@ -62,10 +62,10 @@ export class Container {
     
     typeInfo(): ContainerTypeData | null {
         if (this.typeCode) {
-            const type: string = this.typeCode.slice(0, 2);
-            const sizeFirstChar = this.typeCode[2];
-            const sizeSecondChar = this.typeCode[3];
-            const categoryIdentifier = this.typeCode[4];
+            const type: string = this.typeCode.slice(2, 4);
+            const sizeFirstChar = this.typeCode[0];
+            const sizeSecondChar = this.typeCode[1];
+            const categoryIdentifier = this.ownerCode[3];
 
             return {
                 category: categoryIdentifiers[categoryIdentifier],
