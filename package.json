@@ -4,9 +4,9 @@
   "description": "A utility to easily operate shipping container data",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "files": ["dist"],
+  "files": ["dist", "data"],
   "scripts": {
-    "build": "tsc"
+    "build": "npx tsc"
   },
   "author": "lemon-samovar",
   "license": "Apache-2.0",
