@@ -5,6 +5,12 @@ import _sizeCodesFirstChar from "../data/size-codes-1char.json";
 import _sizeCodesSecondChar from "../data/size-codes-2char.json";
 import _categoryIdentifiers from "../data/category-identifier.json";
 import _bicCodes from "../data/bic-codes.json";
+import { 
+    InvalidContainerNumberError,
+    InvalidOwnerCodeError,
+    InvalidSerialNumberError,
+    InvalidTypeCodeError
+ } from "../src/errors";
 
 const typeCodes = _typeCodes as {[index: string]: string}
 const sizeCodesFirstChar = _sizeCodesFirstChar as {[index: string]: string}
@@ -19,22 +25,59 @@ export class Container {
     readonly typeCode: string;
     
     constructor(data: ContainerData) {
-        if (typeof data !== "string" && (data.format === "short")) {
+        if (typeof data !== "string" && data.format === "short") {
             const fmtContNum = data.containerNumber.trim().toUpperCase();
+            if (fmtContNum.length < 10 || fmtContNum.length > 11) {
+                throw new InvalidContainerNumberError(`Length of number must be 10 or 11, not ${fmtContNum.length}`);
+            }
+            const hasLetters = /^[A-Z]{4}$/;
+            if (!hasLetters.test(fmtContNum.slice(0, 4))) {
+                throw new InvalidOwnerCodeError(`Code must only contain latin characters (a-z, A-Z)`);
+            }
             this.ownerCode = fmtContNum.slice(0, 4);
+            const hasNumbers = /^[0-9]{6,7}$/;
+            if (!hasNumbers.test(fmtContNum.slice(4))) {
+                throw new InvalidSerialNumberError(`Number must only contain arabic numerals (0-9)`);
+            }
             this.serialNumber = fmtContNum.slice(4, 10);
             this.checkDigit = fmtContNum[10] ?? this.calculateCheckDigit();
             this.typeCode = data.typeCode?.trim().toUpperCase() ?? '';
         } else if (typeof data === "string") {
             const fmtContNum = data.trim().toUpperCase();
+            const hasValidChars = /^[A-Z]{4}[0-9]{6,7}$/;
+            if (fmtContNum.length < 10 || fmtContNum.length > 11) {
+                throw new InvalidContainerNumberError(`Length of number must be 10 or 11, not ${fmtContNum.length}`);
+            } else if (!hasValidChars.test(fmtContNum)) {
+                throw new InvalidContainerNumberError(`Number must only contain latin characters (a-z, A-Z) and arabic numerals (0-9)`);
+            }
             this.ownerCode = fmtContNum.slice(0, 4);
             this.serialNumber = fmtContNum.slice(4, 10);
             this.checkDigit = fmtContNum[10] ?? this.calculateCheckDigit();
             this.typeCode = '';
         } else {
-            this.ownerCode = data.ownerCode.trim().toUpperCase();
+            const fmtOwnerCode = data.ownerCode.trim().toUpperCase();
+            const hasLetters = /^[A-Z]{4}$/;
+            if (fmtOwnerCode.length !== 4) {
+                throw new InvalidOwnerCodeError(`Length of code must be 4, not ${fmtOwnerCode.length}`);
+            } else if (!hasLetters.test(fmtOwnerCode)) {
+                throw new InvalidOwnerCodeError(`Code must only contain latin characters (a-z, A-Z)`);
+            }
+            this.ownerCode = fmtOwnerCode;
+            const hasNumbers = /^[0-9]{6,7}$/;
+            if (data.serialNumber.toString().length < 6 || data.serialNumber.toString().length > 7) {
+                throw new InvalidSerialNumberError(`Length of number must be 6 or 7, not ${data.serialNumber.toString().length}`);
+            } else if (!hasNumbers.test(data.serialNumber.toString())) {
+                throw new InvalidSerialNumberError(`Number must only contain arabic numerals (0-9)`);
+            }
             this.serialNumber = data.serialNumber;
             this.checkDigit = data.checkDigit ?? this.calculateCheckDigit();
+            const fmtTypeCode = data.typeCode?.trim().toUpperCase();
+            const hasValidChars = /^[A-Z][0-9]{4}$/;
+            if (fmtTypeCode && fmtTypeCode.length !== 4) {
+                throw new InvalidTypeCodeError(`Length of code must be 4, not ${fmtTypeCode.length}`);
+            } else if (fmtTypeCode && !hasValidChars.test(fmtTypeCode)) {
+                throw new InvalidTypeCodeError(`Code must only contain latin characters (a-z, A-Z) and arabic numerals (0-9)`);
+            }
             this.typeCode = data.typeCode?.trim().toUpperCase() ?? '';
         }
     }    
@@ -45,7 +88,7 @@ export class Container {
         ownerCode.forEach((letter, idx) => {
             sum += lettersTable[letter] * 2**idx;
         });
-        String(this.serialNumber).split("").forEach((element, idx) => {
+        this.serialNumber.toString().split("").forEach((element, idx) => {
             sum += Number(element) * 2**(idx+4)
         });
         return sum % 11 == 10 ? 0 : sum % 11
