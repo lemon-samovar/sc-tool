@@ -1,4 +1,3 @@
-import { lettersTable } from "./constants";
 import type { ContainerData, ContainerTypeData, ContainerOwnerData } from "./types";
 import _typeCodes from "../data/type-codes.json";
 import _sizeCodesFirstChar from "../data/size-codes-1char.json";
@@ -11,6 +10,7 @@ import {
     InvalidSerialNumberError,
     InvalidTypeCodeError
  } from "../src/errors";
+import { Validator } from "./Validator";
 
 const typeCodes = _typeCodes as {[index: string]: string}
 const sizeCodesFirstChar = _sizeCodesFirstChar as {[index: string]: string}
@@ -40,7 +40,7 @@ export class Container {
                 throw new InvalidSerialNumberError(`Number must only contain arabic numerals (0-9)`);
             }
             this.serialNumber = fmtContNum.slice(4, 10);
-            this.checkDigit = fmtContNum[10] ?? this.calculateCheckDigit();
+            this.checkDigit = fmtContNum[10] ?? Validator.calculate(this.ownerCode, this.serialNumber);
             this.typeCode = data.typeCode?.trim().toUpperCase() ?? '';
         } else if (typeof data === "string") {
             const fmtContNum = data.trim().toUpperCase();
@@ -52,7 +52,7 @@ export class Container {
             }
             this.ownerCode = fmtContNum.slice(0, 4);
             this.serialNumber = fmtContNum.slice(4, 10);
-            this.checkDigit = fmtContNum[10] ?? this.calculateCheckDigit();
+            this.checkDigit = fmtContNum[10] ?? Validator.calculate(this.ownerCode, this.serialNumber);
             this.typeCode = '';
         } else {
             const fmtOwnerCode = data.ownerCode.trim().toUpperCase();
@@ -70,7 +70,7 @@ export class Container {
                 throw new InvalidSerialNumberError(`Number must only contain arabic numerals (0-9)`);
             }
             this.serialNumber = data.serialNumber;
-            this.checkDigit = data.checkDigit ?? this.calculateCheckDigit();
+            this.checkDigit = data.checkDigit ?? Validator.calculate(this.ownerCode, this.serialNumber);
             const fmtTypeCode = data.typeCode?.trim().toUpperCase();
             const hasValidChars = /^[A-Z][0-9]{4}$/;
             if (fmtTypeCode && fmtTypeCode.length !== 4) {
@@ -81,18 +81,6 @@ export class Container {
             this.typeCode = data.typeCode?.trim().toUpperCase() ?? '';
         }
     }    
-
-    calculateCheckDigit(): number {
-        const ownerCode = [...this.ownerCode];
-        let sum = 0;
-        ownerCode.forEach((letter, idx) => {
-            sum += lettersTable[letter] * 2**idx;
-        });
-        this.serialNumber.toString().split("").forEach((element, idx) => {
-            sum += Number(element) * 2**(idx+4)
-        });
-        return sum % 11 == 10 ? 0 : sum % 11
-    }
 
     fullContainerNumber(): string {
         const ownerCode = this.ownerCode ? this.ownerCode : 'XXXX';
