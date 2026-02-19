@@ -41,7 +41,14 @@ export class Container {
             }
             this.serialNumber = fmtContNum.slice(4, 10);
             this.checkDigit = fmtContNum[10] ?? Validator.calculate(this.ownerCode, this.serialNumber);
-            this.typeCode = data.typeCode?.trim().toUpperCase() ?? '';
+            const fmtTypeCode = data.typeCode?.trim().toUpperCase();
+            const hasValidChars = /^[A-Z][0-9]{4}$/;
+            if (fmtTypeCode && fmtTypeCode.length !== 4) {
+                throw new InvalidTypeCodeError(`Length of code must be 4, not ${fmtTypeCode.length}`);
+            } else if (fmtTypeCode && !hasValidChars.test(fmtTypeCode)) {
+                throw new InvalidTypeCodeError(`Code must only contain latin characters (a-z, A-Z) and arabic numerals (0-9)`);
+            }
+            this.typeCode = fmtTypeCode ?? '';
         } else if (typeof data === "string") {
             const fmtContNum = data.trim().toUpperCase();
             const hasValidChars = /^[A-Z]{4}[0-9]{6,7}$/;
@@ -78,7 +85,7 @@ export class Container {
             } else if (fmtTypeCode && !hasValidChars.test(fmtTypeCode)) {
                 throw new InvalidTypeCodeError(`Code must only contain latin characters (a-z, A-Z) and arabic numerals (0-9)`);
             }
-            this.typeCode = data.typeCode?.trim().toUpperCase() ?? '';
+            this.typeCode = fmtTypeCode ?? '';
         }
     }    
 
