@@ -9,6 +9,7 @@ export interface FullContainerData {
 export interface ShortContainerData {
     format: "short",
     containerNumber: string,
+    checkDigit?: number | string,
     typeCode?: string
 }
 

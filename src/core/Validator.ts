@@ -1,5 +1,5 @@
-import { lettersTable } from "./constants";
-import { InvalidOwnerCodeError, InvalidSerialNumberError } from "./errors";
+import { lettersTable } from "../constants";
+import { InvalidOwnerCodeError, InvalidSerialNumberError } from "../errors";
 
 export class Validator {
     static calculate(ownerCode: string, serialNumber: string | number): number {

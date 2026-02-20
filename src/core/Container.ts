@@ -1,15 +1,15 @@
-import type { ContainerData, ContainerTypeData, ContainerOwnerData } from "./types";
-import _typeCodes from "../data/type-codes.json";
-import _sizeCodesFirstChar from "../data/size-codes-1char.json";
-import _sizeCodesSecondChar from "../data/size-codes-2char.json";
-import _categoryIdentifiers from "../data/category-identifier.json";
-import _bicCodes from "../data/bic-codes.json";
+import type { ContainerData, ContainerTypeData, ContainerOwnerData } from "../types";
+import _typeCodes from "../../data/type-codes.json";
+import _sizeCodesFirstChar from "../../data/size-codes-1char.json";
+import _sizeCodesSecondChar from "../../data/size-codes-2char.json";
+import _categoryIdentifiers from "../../data/category-identifier.json";
+import _bicCodes from "../../data/bic-codes.json";
 import { 
     InvalidContainerNumberError,
     InvalidOwnerCodeError,
     InvalidSerialNumberError,
     InvalidTypeCodeError
- } from "../src/errors";
+ } from "../errors";
 import { Validator } from "./Validator";
 
 const typeCodes = _typeCodes as {[index: string]: string}
@@ -40,7 +40,7 @@ export class Container {
                 throw new InvalidSerialNumberError(`Number must only contain arabic numerals (0-9)`);
             }
             this.serialNumber = fmtContNum.slice(4, 10);
-            this.checkDigit = fmtContNum[10] ?? Validator.calculate(this.ownerCode, this.serialNumber);
+            this.checkDigit = fmtContNum[10] ?? data.checkDigit ?? Validator.calculate(this.ownerCode, this.serialNumber);
             const fmtTypeCode = data.typeCode?.trim().toUpperCase();
             const hasValidChars = /^[A-Z][0-9]{4}$/;
             if (fmtTypeCode && fmtTypeCode.length !== 4) {
