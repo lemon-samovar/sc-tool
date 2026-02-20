@@ -90,10 +90,7 @@ export class Container {
     }    
 
     getContainerNumber(): string {
-        const ownerCode = this.ownerCode ? this.ownerCode : 'XXXX';
-        const serialNumber = this.serialNumber ? this.serialNumber : 'XXXXXX';
-        const checkDigit = this.checkDigit ? this.checkDigit : 'X';
-        return ownerCode + serialNumber + checkDigit
+        return this.ownerCode + this.serialNumber + this.checkDigit
     }
 
     getFullMarking(): ContainerInfo {
