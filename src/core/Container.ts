@@ -1,4 +1,4 @@
-import type { ContainerData, ContainerTypeData, ContainerOwnerData } from "../types";
+import type { ContainerData, ContainerTypeData, ContainerOwnerData, ContainerInfo } from "../types";
 import _typeCodes from "../../data/type-codes.json";
 import _sizeCodesFirstChar from "../../data/size-codes-1char.json";
 import _sizeCodesSecondChar from "../../data/size-codes-2char.json";
@@ -20,8 +20,8 @@ const bicMap = new Map(_bicCodes.map(item => [item.code, item]));
 
 export class Container {
     readonly ownerCode: string;
-    readonly serialNumber: number | string;
-    readonly checkDigit: number | string;
+    readonly serialNumber: string;
+    readonly checkDigit: number;
     readonly typeCode: string;
     
     constructor(data: ContainerData) {
@@ -40,7 +40,7 @@ export class Container {
                 throw new InvalidSerialNumberError(`Number must only contain arabic numerals (0-9)`);
             }
             this.serialNumber = fmtContNum.slice(4, 10);
-            this.checkDigit = fmtContNum[10] ?? data.checkDigit ?? Validator.calculate(this.ownerCode, this.serialNumber);
+            this.checkDigit = Number(fmtContNum[10]) ?? Number(data.checkDigit) ?? Validator.calculate(this.ownerCode, this.serialNumber);
             const fmtTypeCode = data.typeCode?.trim().toUpperCase();
             const hasValidChars = /^[A-Z][0-9]{4}$/;
             if (fmtTypeCode && fmtTypeCode.length !== 4) {
@@ -59,7 +59,7 @@ export class Container {
             }
             this.ownerCode = fmtContNum.slice(0, 4);
             this.serialNumber = fmtContNum.slice(4, 10);
-            this.checkDigit = fmtContNum[10] ?? Validator.calculate(this.ownerCode, this.serialNumber);
+            this.checkDigit = Number(fmtContNum[10]) ?? Validator.calculate(this.ownerCode, this.serialNumber);
             this.typeCode = '';
         } else {
             const fmtOwnerCode = data.ownerCode.trim().toUpperCase();
@@ -76,8 +76,8 @@ export class Container {
             } else if (!hasNumbers.test(data.serialNumber.toString())) {
                 throw new InvalidSerialNumberError(`Number must only contain arabic numerals (0-9)`);
             }
-            this.serialNumber = data.serialNumber;
-            this.checkDigit = data.checkDigit ?? Validator.calculate(this.ownerCode, this.serialNumber);
+            this.serialNumber = data.serialNumber.toString();
+            this.checkDigit = Number(data.checkDigit) ?? Validator.calculate(this.ownerCode, this.serialNumber);
             const fmtTypeCode = data.typeCode?.trim().toUpperCase();
             const hasValidChars = /^[A-Z][0-9]{4}$/;
             if (fmtTypeCode && fmtTypeCode.length !== 4) {
@@ -89,14 +89,24 @@ export class Container {
         }
     }    
 
-    fullContainerNumber(): string {
+    getContainerNumber(): string {
         const ownerCode = this.ownerCode ? this.ownerCode : 'XXXX';
         const serialNumber = this.serialNumber ? this.serialNumber : 'XXXXXX';
         const checkDigit = this.checkDigit ? this.checkDigit : 'X';
         return ownerCode + serialNumber + checkDigit
     }
+
+    getFullMarking(): ContainerInfo {
+        const info: ContainerInfo = {
+            ownerCode: this.ownerCode,
+            serialNumber: this.serialNumber,
+            checkDigit: this.checkDigit,
+            typeCode: this.typeCode
+        };
+        return info
+    }
     
-    typeInfo(): ContainerTypeData | null {
+    getTypeInfo(): ContainerTypeData | null {
         if (this.typeCode) {
             const type: string = this.typeCode.slice(2, 4);
             const sizeFirstChar = this.typeCode[0];
@@ -115,7 +125,7 @@ export class Container {
         }
     }
 
-    ownerInfo(): ContainerOwnerData | null {
+    getOwnerInfo(): ContainerOwnerData | null {
         if (!this.ownerCode) return null;
         const entry = bicMap.get(this.ownerCode);
         if (!entry) return null;

@@ -32,3 +32,10 @@ export interface ContainerOwnerData {
     city: string,
     country: string
 }
+
+export interface ContainerInfo {
+    ownerCode: string;
+    serialNumber: string;
+    checkDigit: number;
+    typeCode: string;
+}
