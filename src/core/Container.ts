@@ -40,7 +40,7 @@ export class Container {
                 throw new InvalidSerialNumberError(`Number must only contain arabic numerals (0-9)`);
             }
             this.serialNumber = fmtContNum.slice(4, 10);
-            this.checkDigit = Number(fmtContNum[10]) ?? Number(data.checkDigit) ?? Validator.calculate(this.ownerCode, this.serialNumber);
+            this.checkDigit = Number(fmtContNum[10] ?? data.checkDigit ?? Validator.calculate(this.ownerCode, this.serialNumber));
             const fmtTypeCode = data.typeCode?.trim().toUpperCase();
             const hasValidChars = /^[A-Z][0-9]{4}$/;
             if (fmtTypeCode && fmtTypeCode.length !== 4) {
@@ -59,7 +59,7 @@ export class Container {
             }
             this.ownerCode = fmtContNum.slice(0, 4);
             this.serialNumber = fmtContNum.slice(4, 10);
-            this.checkDigit = Number(fmtContNum[10]) ?? Validator.calculate(this.ownerCode, this.serialNumber);
+            this.checkDigit = Number(fmtContNum[10] ?? Validator.calculate(this.ownerCode, this.serialNumber));
             this.typeCode = '';
         } else {
             const fmtOwnerCode = data.ownerCode.trim().toUpperCase();
@@ -77,7 +77,7 @@ export class Container {
                 throw new InvalidSerialNumberError(`Number must only contain arabic numerals (0-9)`);
             }
             this.serialNumber = data.serialNumber.toString();
-            this.checkDigit = Number(data.checkDigit) ?? Validator.calculate(this.ownerCode, this.serialNumber);
+            this.checkDigit = Number(data.checkDigit ?? Validator.calculate(this.ownerCode, this.serialNumber));
             const fmtTypeCode = data.typeCode?.trim().toUpperCase();
             const hasValidChars = /^[A-Z][0-9]{4}$/;
             if (fmtTypeCode && fmtTypeCode.length !== 4) {
