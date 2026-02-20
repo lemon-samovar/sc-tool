@@ -42,7 +42,7 @@ export class Container {
             this.serialNumber = fmtContNum.slice(4, 10);
             this.checkDigit = Number(fmtContNum[10] ?? data.checkDigit ?? Validator.calculate(this.ownerCode, this.serialNumber));
             const fmtTypeCode = data.typeCode?.trim().toUpperCase();
-            const hasValidChars = /^[A-Z][0-9]{4}$/;
+            const hasValidChars = /^[A-Z0-9]{4}$/;
             if (fmtTypeCode && fmtTypeCode.length !== 4) {
                 throw new InvalidTypeCodeError(`Length of code must be 4, not ${fmtTypeCode.length}`);
             } else if (fmtTypeCode && !hasValidChars.test(fmtTypeCode)) {
@@ -79,7 +79,7 @@ export class Container {
             this.serialNumber = data.serialNumber.toString();
             this.checkDigit = Number(data.checkDigit ?? Validator.calculate(this.ownerCode, this.serialNumber));
             const fmtTypeCode = data.typeCode?.trim().toUpperCase();
-            const hasValidChars = /^[A-Z][0-9]{4}$/;
+            const hasValidChars = /^[A-Z0-9]{4}$/;
             if (fmtTypeCode && fmtTypeCode.length !== 4) {
                 throw new InvalidTypeCodeError(`Length of code must be 4, not ${fmtTypeCode.length}`);
             } else if (fmtTypeCode && !hasValidChars.test(fmtTypeCode)) {
