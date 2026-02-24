@@ -28,7 +28,9 @@
     "iso6346",
     "bic-code",
     "logistics",
-    "check-digit"
+    "check-digit",
+    "cli",
+    "validation"
   ],
   "bugs": {
     "url": "https://github.com/lemon-samovar/sc-tool/issues",

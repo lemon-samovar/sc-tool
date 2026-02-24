@@ -23,6 +23,8 @@ export class Container {
     readonly serialNumber: string;
     readonly checkDigit: number;
     readonly typeCode: string;
+    loaded: boolean = false;
+    sealNumber: string | null = null;
     
     constructor(data: ContainerData) {
         if (typeof data !== "string" && data.format === "short") {
@@ -127,5 +129,15 @@ export class Container {
         const entry = bicMap.get(this.ownerCode);
         if (!entry) return null;
         else return entry
+    }
+
+    sealContainer(sealNumber: string | number) {
+        this.sealNumber = sealNumber.toString();
+        this.loaded = true;
+    }
+
+    removeSeal() {
+        this.sealNumber = null;
+        this.loaded = false;
     }
 }
