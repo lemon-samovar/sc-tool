@@ -1,4 +1,6 @@
 [![Node.js Package](https://github.com/lemon-samovar/sc-tool/actions/workflows/npm-publish-github-packages.yml/badge.svg)](https://github.com/lemon-samovar/sc-tool/actions/workflows/npm-publish-github-packages.yml)
+![NPM Version](https://img.shields.io/npm/v/%40lemon-samovar%2Fsc-tool)
+![NPM Downloads](https://img.shields.io/npm/dw/%40lemon-samovar%2Fsc-tool)
 [![npm](https://img.shields.io/badge/npm-CB3837?logo=npm&logoColor=fff)](#)
 # sc-tool (shipping container tool)
 
