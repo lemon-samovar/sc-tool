@@ -38,4 +38,6 @@ export interface ContainerInfo {
     serialNumber: string;
     checkDigit: number;
     typeCode: string;
+    hasCargo: boolean;
+    sealNumber: string | null;
 }

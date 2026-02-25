@@ -23,7 +23,7 @@ export class Container {
     readonly serialNumber: string;
     readonly typeCode: string;
     checkDigit: number;
-    loaded: boolean = false;
+    hasCargo: boolean = false;
     sealNumber: string | null = null;
     
     constructor(data: ContainerData) {
@@ -112,7 +112,9 @@ export class Container {
             ownerCode: this.ownerCode,
             serialNumber: this.serialNumber,
             checkDigit: this.checkDigit,
-            typeCode: this.typeCode
+            typeCode: this.typeCode,
+            hasCargo: this.hasCargo,
+            sealNumber: this.sealNumber
         };
         return info
     }
@@ -145,11 +147,11 @@ export class Container {
 
     sealContainer(sealNumber: string | number) {
         this.sealNumber = sealNumber.toString();
-        this.loaded = true;
+        this.hasCargo = true;
     }
 
     removeSeal() {
         this.sealNumber = null;
-        this.loaded = false;
+        this.hasCargo = false;
     }
 }
