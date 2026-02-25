@@ -21,8 +21,8 @@ const bicMap = new Map(_bicCodes.map(item => [item.code, item]));
 export class Container {
     readonly ownerCode: string;
     readonly serialNumber: string;
-    readonly checkDigit: number;
     readonly typeCode: string;
+    checkDigit: number;
     loaded: boolean = false;
     sealNumber: string | null = null;
     
@@ -89,7 +89,19 @@ export class Container {
             }
             this.typeCode = fmtTypeCode ?? '';
         }
-    }    
+    }
+    
+    isValid(): boolean {
+        const correctCheckDigit = Validator.calculate(this.ownerCode, this.serialNumber);
+        if (correctCheckDigit === this.checkDigit) return true
+        else return false
+    }
+
+    recalcCheckDigit(): number {
+        const correctCheckDigit = Validator.calculate(this.ownerCode, this.serialNumber);
+        this.checkDigit = correctCheckDigit;
+        return correctCheckDigit
+    }
 
     getContainerNumber(): string {
         return this.ownerCode + this.serialNumber + this.checkDigit
