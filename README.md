@@ -1,7 +1,7 @@
 [![Node.js Package](https://github.com/lemon-samovar/sc-tool/actions/workflows/npm-publish-github-packages.yml/badge.svg)](https://github.com/lemon-samovar/sc-tool/actions/workflows/npm-publish-github-packages.yml)
-![NPM Version](https://img.shields.io/npm/v/%40lemon-samovar%2Fsc-tool)
-![NPM Downloads](https://img.shields.io/npm/dw/%40lemon-samovar%2Fsc-tool)
-[![npm](https://img.shields.io/badge/npm-CB3837?logo=npm&logoColor=fff)](#)
+[![NPM Version](https://img.shields.io/npm/v/%40lemon-samovar%2Fsc-tool)](https://www.npmjs.com/package/@lemon-samovar/sc-tool)
+[![NPM Downloads](https://img.shields.io/npm/dw/%40lemon-samovar%2Fsc-tool)](https://www.npmjs.com/package/@lemon-samovar/sc-tool)
+[![npm](https://img.shields.io/badge/npm-CB3837?logo=npm&logoColor=fff)](https://www.npmjs.com/package/@lemon-samovar/sc-tool)
 # sc-tool (shipping container tool)
 
 `sc-tool` is the utility to easily operate shipping container data.
@@ -129,7 +129,35 @@ console.log(`Calculated check-digit: ${cont.checkDigit}`);
 ```bash
 Calculated check-digit: 0
 ```
+#### `container.isValid(): boolean`
+Returns true if check-digit is valid for given bic-code and serial number. Otherwise, returns false.
 
+*Example:*
+```ts
+const cont = new Container("ABCU1234569"); // check-digit 9 is not valid 
+const isValid = cont.isValid();
+console.log(isValid);
+```
+```bash
+false
+```
+#### `container.recalcCheckDigit(): number`
+Recalculates check-digit in case it is invalid and returns the correct one.
+
+*Example:*
+```ts
+const cont = new Container("ABCU1234569"); // check-digit 9 is not correct
+let isValid = cont.isValid();
+console.log(`Given check-digit: 9. Is valid: ${isValid}`);
+
+const newCheckDigit = cont.recalcCheckDigit();
+isValid = cont.isValid();
+console.log(`Correct check-digit: ${newCheckDigit}. Is valid: ${isValid}`);
+```
+```bash
+Given check-digit: 9. Is valid: false
+Correct check-digit: 0. Is valid: true
+```
 #### `container.getContainerNumber(): string`
 Returns full container number.
 
@@ -150,6 +178,8 @@ interface ContainerInfo {
     serialNumber: string;
     checkDigit: number;
     typeCode: string;
+    hasCargo: boolean;
+    sealNumber: string | null;
 }
 ```
 
@@ -168,7 +198,9 @@ console.log(result);
   ownerCode: 'ABCU',
   serialNumber: '123456',
   checkDigit: 0,
-  typeCode: '22K2'
+  typeCode: '22K2',
+  hasCargo: false,
+  sealNumber: null
 }
 ```
 
@@ -227,14 +259,56 @@ console.log(info);
   country: 'Russian Federation'
 }
 ```
+#### `container.sealContainer(sealNumber: string | number)`
+Sets a seal number and loads the container.
+
+*Example:*
+```ts
+cont.sealContainer("98765432");
+const info = cont.getFullMarking();
+console.log(info);
+```
+```bash
+{
+  ownerCode: 'FCCU',
+  serialNumber: '123456',
+  checkDigit: 0,
+  typeCode: '',
+  hasCargo: true,
+  sealNumber: '98765432'
+}
+```
+#### `container.removeSeal()`
+Removes the seal number and unloads the container.
+
+*Example:*
+```ts
+cont.removeSeal();
+const info = cont.getFullMarking();
+console.log(info);
+```
+```bash
+{
+  ownerCode: 'FCCU',
+  serialNumber: '123456',
+  checkDigit: 0,
+  typeCode: '',
+  hasCargo: false,
+  sealNumber: null
+}
+```
 #### `container.ownerCode: string`
 A container owner's bic-code. The field is read-only.
 #### `container.serialNumber: string`
 A container serial number. The field is read-only.
 #### `container.checkDigit: number`
-A container number check-digit. Auto-calculated in `Container` class constructor by owner's bic-code and container serial number. The field is read-only.
+A container number check-digit. Auto-calculated in `Container` class constructor by owner's bic-code and container serial number.
 #### `container.typeCode: string`
 A container type code. An empty string if the type code is not provided. The field is read-only.
+#### `container.hasCargo: boolean`
+Represents if the container contains a sealed cargo.
+#### `container.sealNumber: string | null`
+A container seal number. Null if the container is not sealed and does not contain any cargo.
 
 
 ### `Validator`
